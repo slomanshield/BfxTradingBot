@@ -693,7 +693,7 @@ bool BfxTradingBotMain::IsTimeToCalcWeeklyPivot()
 		struct tm * ptm_future;
 		ptm_current = gmtime(&currTime);
 
-		if (ptm_current->tm_wday <= MONDAY)
+		if (ptm_current->tm_wday < MONDAY)
 			numDaysAway = MONDAY - ptm_current->tm_wday;
 		else
 			numDaysAway = 7 - (ptm_current->tm_wday - MONDAY);
