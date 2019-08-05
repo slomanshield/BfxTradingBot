@@ -65,8 +65,6 @@ class BfxLibrary
 		int WaitForData(double timeoutMilliseconds);
 		
 		CURL* curl;
-		Document m_doc;
-		Document m_doc_auth;
 		ix::WebSocket webSocketTradeChannel;
 		ix::WebSocket webSocketAuth;
 		std::string responseData;

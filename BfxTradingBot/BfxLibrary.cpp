@@ -146,11 +146,12 @@ void BfxLibrary::CreateOutputPayload(CURL* curl, struct curl_slist **in_chunk)
 
 void BfxLibrary::ExtractCurrentPrice(std::string* str)
 {
-	ParseResult parseResult = m_doc.Parse(str->c_str());
+	Document doc;
+	ParseResult parseResult = doc.Parse(str->c_str());
 
-	if (parseResult.IsError() == false && m_doc.IsArray())
+	if (parseResult.IsError() == false && doc.IsArray())
 	{
-		Value& valArray = m_doc[2];//get array
+		Value& valArray = doc[2];//get array
 
 		if (valArray.IsArray())
 		{
@@ -166,13 +167,14 @@ void BfxLibrary::ExtractCurrentPrice(std::string* str)
 
 void BfxLibrary::ExtractPositionSize(std::string* str)
 {
-	ParseResult parseResult = m_doc_auth.Parse(str->c_str());
+	Document doc;
+	ParseResult parseResult = doc.Parse(str->c_str());
 
-	if (parseResult.IsError() == false && m_doc_auth.IsArray())
+	if (parseResult.IsError() == false && doc.IsArray())
 	{
-		if (m_doc_auth[2].Size() != 0)
+		if (doc[2].Size() != 0)
 		{
-			Value& valArray = m_doc_auth[2];
+			Value& valArray = doc[2];
 			for (int i = 0; i < valArray.Size(); i++)
 			{
 				Value& valArrayPosition = valArray[i];
@@ -196,11 +198,12 @@ void BfxLibrary::ExtractPositionSize(std::string* str)
 
 void BfxLibrary::ExtractPositionSizeUpdates(std::string * str)
 {
-	ParseResult parseResult = m_doc_auth.Parse(str->c_str());
+	Document doc;
+	ParseResult parseResult = doc.Parse(str->c_str());
 	
-	if (parseResult.IsError() == false && m_doc_auth.IsArray())
+	if (parseResult.IsError() == false && doc.IsArray())
 	{
-		Value& valTopArray = m_doc_auth[2];
+		Value& valTopArray = doc[2];
 		if (valTopArray.Size() != 0)
 		{
 			
@@ -672,25 +675,26 @@ int BfxLibrary::GetTradeableBalance(double * balance_out,double* balance_pl_out)
 int BfxLibrary::CreateClosePosition(double * amount)
 {
 	int cc = SUCCESS;
-
+	
 	if (webSocketTradeChannel.getReadyState() == ReadyState::Open)
 	{
+		Document doc;
 		inputData = CreateOrderPayload(amount,close_position);
 
 		cc = SendRecieveWebSocketData(&webSocketAuth, &inputData, &responseData);
 
 		if (cc == SUCCESS)
 		{
-			cc = ParseResponseData(&m_doc_auth);
+			cc = ParseResponseData(&doc);
 		}
 
 		if (cc == SUCCESS)
 		{
-			responseString = m_doc_auth[2].GetArray().operator[](6).GetString();
+			responseString = doc[2].GetArray().operator[](6).GetString();
 			if (responseString.compare("SUCCESS") != 0)
 			{
 				cc = WebSocketErrorFromBfx;
-				LOG_ERROR(m_doc_auth[2].GetArray().operator[](7).GetString());
+				LOG_ERROR(doc[2].GetArray().operator[](7).GetString());
 			}
 		}
 
@@ -712,21 +716,22 @@ int BfxLibrary::CreateOrder(double * amount)
 
 	if (webSocketTradeChannel.getReadyState() == ReadyState::Open)
 	{
+		Document doc;
 		inputData = CreateOrderPayload(amount, order);
 
 		cc = SendRecieveWebSocketData(&webSocketAuth, &inputData, &responseData);
 
 		if (cc == SUCCESS)
 		{
-			cc = ParseResponseData(&m_doc_auth);
+			cc = ParseResponseData(&doc);
 		}
 
 		if (cc == SUCCESS)
 		{
-			responseString = m_doc_auth[2].GetArray().operator[](6).GetString();
+			responseString = doc[2].GetArray().operator[](6).GetString();
 			if (responseString.compare("SUCCESS") != 0)
 			{
-				std::string error_string = m_doc_auth[2].GetArray().operator[](7).GetString();
+				std::string error_string = doc[2].GetArray().operator[](7).GetString();
 				if (error_string.find("not enough tradable balance") != -1)
 					cc = INSUFFICENT_FUNDS;
 				else
