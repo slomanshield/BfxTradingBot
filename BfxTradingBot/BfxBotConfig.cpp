@@ -197,7 +197,7 @@ int BfxBotConfig::ExtractConfigData()
 				candleTimeFrame = one_week;
 			else
 			{
-				LOG_ERROR("Invalid Candle Time Frame, must be 5m,15m,30m,1h,3hr,6hr,12hr,1d,1w");
+				LOG_ERROR("Invalid Candle Time Frame, must be 5m,15m,30m,1h,3hr,6hr,12hr,1D,1w");
 				cc = INVALID_CONFIG_VALUE;
 				break;
 			}

@@ -8,7 +8,7 @@
 #define THREE_H_TIMEFRAME "3h"
 #define SIX_H_TIMEFRAME "6h"
 #define TWELVE_H_TIMEFRAME "12h"
-#define ONE_D_TIMEFRAME "1d"
+#define ONE_D_TIMEFRAME "1D"
 #define ONE_W_TIMEFRAME "1w"
 
 #define NUM_TIMEFRAMES 9
